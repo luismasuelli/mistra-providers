@@ -19,8 +19,8 @@ class CSVBackTestingProvider(BackTestingProvider):
     Parses a CSV file and creates the two sources from it.
     """
 
-    def __init__(self, fileobj, base_timestamp, interval=Interval.SECOND, chunk_size=3600,
-                 timestamp_format='%Y%m%d %H:%M:%S.%f', initial_buy=None, initial_sale=None,
+    def __init__(self, fileobj, base_timestamp, initial_buy, initial_sale,
+                 interval=Interval.SECOND, chunk_size=3600, timestamp_format='%Y%m%d %H:%M:%S.%f',
                  timestamp_column=1, buy_price_column=2, sale_price_column=3, price_precision=4):
         """
         Reads data from a CSV file.
