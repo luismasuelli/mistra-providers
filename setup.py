@@ -3,8 +3,9 @@ from setuptools import setup
 setup(
     name='mistra-providers',
     version='0.0.4',
-    packages=['mistra.providers.historical.raw.truefx',
-              'mistra.providers.historical.raw.filesystem'],
+    packages=['mistra.providers.historical.preprocessing',
+              'mistra.providers.historical.raw.filesystem',
+              'mistra.providers.historical.raw.truefx'],
     url='',
     license='MIT',
     author='luismasuelli',
