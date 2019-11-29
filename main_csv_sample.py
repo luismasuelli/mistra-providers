@@ -1,13 +1,11 @@
 from datetime import datetime, timedelta
-
 from mistra.core.pricing import Candle
-
-from mistra.providers.historical.filesystem import CSVBackTestingProvider
+from mistra.providers.historical.truefx import TrueFXBackTestingProvider
 
 
 refdt = datetime(2019, 10, 1)
 with open('/Users/luismasuelli/Downloads/EURUSD-2019-10.csv') as f:
-    reader = CSVBackTestingProvider(f, refdt, Candle.constant(100001), Candle.constant(100002), price_precision=4)
+    reader = TrueFXBackTestingProvider(f, refdt, '1.0889', '1.08891', price_precision=4)
     buy, sale = reader()
     print("Buy sample:", buy[refdt:refdt+timedelta(seconds=5)])
     print("Sale sample:", sale[refdt:refdt+timedelta(seconds=5)])

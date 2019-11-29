@@ -24,14 +24,14 @@ class CSVBackTestingProvider(BackTestingProvider):
                  timestamp_column=1, buy_price_column=2, sale_price_column=3, price_precision=4):
         """
         Reads data from a CSV file.
-        :param fileobj: The file (string or object) to read from.
+        :param fileobj: The file (name or object) to read from.
         :param base_timestamp: The base date[time] to use for the generated sources. E.g. for truefx, it will be
           <year>-<month>-01 00:00:00.
         :param interval: The interval to srink the data into.
         :param chunk_size: The chunk size to use for the internal growing arrays.
         :param timestamp_format: The timestamp format to use when reading the timestamp column.
-        :param initial_buy: Initial buy value to use (e.g. the prices from previous work month).
-        :param initial_sale: Initial sale value to use (e.g. the prices from previous work month).
+        :param initial_buy: Initial buy non-standardized price to use (e.g. the end price from previous work month).
+        :param initial_sale: Initial sale non-standardized price to use (e.g. the end price from previous work month).
         :param timestamp_column: The column holding the timestamp.
         :param buy_price_column: The column with the buy price.
         :param sale_price_column: The column with the sale price (which will be bigger than buy price).
@@ -44,12 +44,12 @@ class CSVBackTestingProvider(BackTestingProvider):
         self._interval = interval
         self._chunk_size = chunk_size
         self._timestamp_format = timestamp_format
-        self._initial_buy = initial_buy
-        self._initial_sale = initial_sale
         self._timestamp_column = timestamp_column
         self._buy_price_column = buy_price_column
         self._sale_price_column = sale_price_column
         self._price_precision = price_precision
+        self._initial_buy = Candle.constant(self._standardize(initial_buy))
+        self._initial_sale = Candle.constant(self._standardize(initial_sale))
 
     def _standardize(self, price_string):
         """
