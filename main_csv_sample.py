@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-from mistra.core.pricing import Candle
-from mistra.providers.historical.truefx import TrueFXBackTestingProvider
+from mistra.providers.historical.raw.truefx import TrueFXBackTestingProvider
 
 
 refdt = datetime(2019, 10, 1)
