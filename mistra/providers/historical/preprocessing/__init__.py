@@ -1,7 +1,10 @@
 import csv, os
 from datetime import timedelta
+from numpy import array
+import pandas as pd
 from mistra.core.intervals import Interval
 from mistra.core.pricing import Candle
+from mistra.core.sources import Source
 
 
 def dump(source, file_pattern, interval=Interval.DAY):
@@ -47,3 +50,29 @@ def dump(source, file_pattern, interval=Interval.DAY):
                 candle = chunk[chunk_idx]
                 writer.writerow((candle.start, candle.min, candle.max, candle.end))
         current_chunk_date += timedelta(seconds=interval_size)
+
+
+def load(fileobj, interval, base_timestamp, initial=None):
+    """
+    Given a file name or file object, an interval, and a base timestamp (and other optional arguments)
+      it loads candle data from a 4-column CSV file and makes a source frame with that.
+
+    :param fileobj: The source file object (or name).
+    :param interval: The interval to consider (beforehand known that interval is the appropriate).
+    :param base_timestamp: The base timestamp to use (beforehand known the source corresponds to it).
+    :param initial: The initial value (beforehand known that value was the end price in the previous market data).
+    :return:
+    """
+
+    if not isinstance(initial, Candle) and initial is not None:
+        initial = Candle.constant(initial)
+    pd_csv = pd.read_csv(fileobj, chunksize=3600, header=None)
+    source = Source(Candle, base_timestamp, interval, initial)
+    rows = []
+    for chunk in pd_csv:
+        for idx, row in chunk.iterrows():
+            rows.append(Candle(start=row[0], min=row[1], max=row[2], end=row[3]))
+    data = array(rows, dtype=Candle)
+    data.shape = (data.shape[0], 1)
+    source.push(data)
+    return source

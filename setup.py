@@ -11,5 +11,5 @@ setup(
     author_email='luisfmasuelli@gmail.com',
     description='MISTRA Providers contains a collection of custom providers for the MISTRA package',
     python_requires='>=3.3',
-    install_requires=['mistra==0.0.5']
+    install_requires=['mistra==0.0.5', 'pandas==0.25.3']
 )
