@@ -6,7 +6,6 @@ Since this is old data, file-system can safely use it.
 One example: CSV data.
 """
 from datetime import datetime
-
 import pandas as pd
 from mistra.core.intervals import Interval
 from mistra.core.pricing import Candle
@@ -70,13 +69,11 @@ class CSVBackTestingProvider(BackTestingProvider):
 
         csv = pd.read_csv(self._fileobj, chunksize=self._chunk_size, header=None,
                           dtype={self._buy_price_column: str, self._sale_price_column: str})
-        buy_source = Source(Candle, self._base_timestamp, self._interval, self._initial_buy)
-        sale_source = Source(Candle, self._base_timestamp, self._interval, self._initial_sale)
+        source = Source(Candle, self._base_timestamp, self._interval, self._initial_buy, self._initial_sale)
         for chunk in csv:
             for idx, row in chunk.iterrows():
                 stamp = datetime.strptime(row[self._timestamp_column], self._timestamp_format)
                 buy_price = self._standardize(row[self._buy_price_column])
                 sale_price = self._standardize(row[self._sale_price_column])
-                self._merge(stamp, buy_price, buy_source)
-                self._merge(stamp, sale_price, sale_source)
-        return buy_source, sale_source
+                self._merge(stamp, buy_price, sale_price, source)
+        return source
